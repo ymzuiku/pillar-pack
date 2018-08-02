@@ -32,11 +32,16 @@ function getPublicDirPath(file) {
 function getLibFilePath(outPath, sourceFilePath) {
   return path.resolve(outPath, `lib/${path.basename(sourceFilePath)}`);
 }
+function getOnlyServerDirPath(file) {
+  return path.resolve(process.cwd(), file);
+}
 function saveTsConfig(v) {
   const p = path.resolve(process.cwd(), 'tsconfig.json');
   fs.removeSync(p);
-  fs.writeJSONSync(p, v, { encoding: 'utf8' });
+  fs.writeJSONSync(p, v, { encoding: 'utf-8' });
 }
+
+
 
 module.exports = {
   execLog,
@@ -44,6 +49,7 @@ module.exports = {
   getSourceFilePath,
   getOutDirPath,
   getPublicDirPath,
+  getOnlyServerDirPath,
   getLibFilePath,
   saveTsConfig,
 };

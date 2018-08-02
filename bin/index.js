@@ -12,14 +12,15 @@ const {
   getSourceFilePath,
   getOutDirPath,
   getPublicDirPath,
+  getOnlyServerDirPath,
   getLibFilePath,
   saveTsConfig,
 } = require('./utils');
 const argv = process.argv.splice(2);
 
-let bundleName = `bundle_${Date.now()}.js`;
+let bin = path.resolve(__dirname, '../node_modules/.bin');
 let outDir = `build`;
-let publicDir = `src/public`;
+let publicDir = `public`;
 let publicDirPath = getPublicDirPath(publicDir);
 let outDirPath = getOutDirPath(outDir);
 let sourceFile = `src/index.js`;
@@ -34,6 +35,15 @@ let sourceMap = true;
 let targetES3 = 'es3';
 let isAutoCreateTsConfig = true;
 let isAutoCopyPublicDir = true;
+let isOnlyServer = false;
+let onlyServerDir = 'build';
+let onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
+let isOnlyPack = false;
+let isCopyAndPackCode = true;
+let isOpenBrowser = false;
+let tscParams = '';
+let syncParams = '';
+let fpackParams = '';
 
 // 命令行参数
 for (let i = 0; i < argv.length; i++) {
@@ -74,13 +84,37 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--target') {
     targetES3 = argv[i + 1];
   }
+  if (argv[i] === '--server') {
+    if (argv[i + 1]) {
+      onlyServerDir = argv[i + 1];
+    }
+    isOnlyServer = true;
+  }
+  if (argv[i] === '--browser' || argv[i] === '-b') {
+    isOpenBrowser = true;
+  }
+  if (argv[i] === '--pack') {
+    isOnlyPack = true;
+  }
+  if (argv[i] === '--tsc-params') {
+    tscParams = argv[i + 1];
+  }
+  if (argv[i] === '--fpack-params') {
+    fpackParams = argv[i + 1];
+  }
+  if (argv[i] === '--sync-params') {
+    syncParams = argv[i + 1];
+  }
   if (argv[i] === '--version') {
     console.log('pillar-pack: ' + package.version);
   }
   if (argv[i] === '-h' || argv[i] === '--help') {
+    isCopyAndPackCode = false;
+    console.log(' ');
+    console.log('help list:');
     console.log('-s : source file');
     console.log('-o : set out dir');
-    console.log('--public : set public dir');
+    console.log('--public : set public dir, defalut ./public');
     console.log('--prod : use prod mode, only build');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
@@ -89,6 +123,11 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--no-public : no copy public dir');
     console.log('--source-map : true | false, defalut true');
     console.log('--target : defalut es3');
+    console.log('--pack : only pack js');
+    console.log('--server : only use server');
+    console.log('--tsc-params : set "typescript:tsc" params');
+    console.log('--fpack-params : set "fastpack" params');
+    console.log('--sync-params : set "brower-sync" params');
     console.log('--version : cat version');
   }
 }
@@ -97,54 +136,104 @@ sourceDir = getSourceDir(sourceFile);
 sourceFilePath = getSourceFilePath(sourceFile);
 publicDirPath = getPublicDirPath(publicDir);
 libFilePath = getLibFilePath(outDirPath, sourceFilePath);
-
-if (isProd) {
-  fs.removeSync(outDirPath);
-}
+onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
+let bundleEndName = isProd ? `bundle_${Date.now()}.js` : 'index.js';
 
 // change tsconfig
 if (jsx === 'react' || jsx === 'react-native') {
   tsconfig.compilerOptions.jsx = jsx;
 }
-tsconfig.compilerOptions.outDir = outDir;
+tsconfig.compilerOptions.outDir = outDir + '/lib';
 tsconfig.compilerOptions.sourceMap = sourceMap;
 tsconfig.compilerOptions.target = targetES3;
-tsconfig.compilerOptions.include = [sourceDir + '/**/*'];
-if (isAutoCreateTsConfig) {
-  saveTsConfig(tsconfig);
-}
+tsconfig.compilerOptions.watch = !isProd;
+tsconfig.include = [sourceDir + '/**/*'];
 
-if (isAutoCopyPublicDir) {
-  copyPublic({ publicDirPath, outDir, bundleName, bundleReanme, htmlFile });
-}
-
-exec('tsc', execLog);
-if (isProd) {
-  exec(
-    `
-  fpack ${libFilePath} \
-      -o ${outDirPath} \
-      --nm "$(pwd)/node_modules" \
-      --nm node_modules \
-      --preprocess='^${outDir + '/lib'}/.+\.js$' \
-      --preprocess='^node_modules/components/[^/]+\.js$'
-  `,
-    execLog,
-  );
-} else {
-  exec(
-    `
-  fpack ./src/index.js \
-      -o build \
+function runPack(...args) {
+  if (isProd) {
+    exec(
+      `
+${bin}/fpack ${libFilePath} \
+    -o ${outDirPath} \
+    --nm "$(pwd)/node_modules" \
+    --nm node_modules \
+    ${fpackParams}
+`,
+      packEnd,
+    );
+  } else {
+    setTimeout(() => {
+      exec(
+        `
+  ${bin}/fpack ${libFilePath} \
+    -o ${outDirPath} \
       -w \
       --dev \
       --nm "$(pwd)/node_modules" \
       --nm node_modules \
-      --preprocess='^ui/.+\.js$' \
-      --preprocess='^node_modules/components/[^/]+\.js$'
+      ${fpackParams}
   `,
+        execLog,
+      );
+    }, 300);
+  }
+}
+
+function copyAndPackCode() {
+  if (isAutoCreateTsConfig) {
+    saveTsConfig(tsconfig);
+  }
+  if (isProd) {
+    if (fs.existsSync(outDirPath)) {
+      fs.removeSync(outDirPath);
+      fs.mkdirpSync(outDirPath);
+    }
+  }
+
+  if (isAutoCopyPublicDir) {
+    copyPublic({
+      publicDirPath,
+      outDir,
+      bundleReanme,
+      bundleEndName,
+      htmlFile,
+    });
+  }
+
+  if (!isProd) {
+    exec(`node ${bin}/tsc &`, execLog);
+  } else {
+    exec(`node ${bin}/tsc &`, runPack);
+  }
+
+  if (!isProd) {
+    runPack();
+    runServer(outDir);
+    console.log('open http://127.0.0.1:3000');
+  } else {
+    console.log('build...');
+  }
+}
+
+function packEnd(...args) {
+  execLog(...args);
+  fs.moveSync(outDirPath + '/index.js', outDirPath + '/' + bundleEndName);
+  console.log('done! build: ' + outDirPath);
+}
+
+function runServer(dir) {
+  exec(
+    `cd ${dir} && node ${bin}/browser-sync start ${
+      isOpenBrowser ? '' : '--browser'
+    } --server ${syncParams} --no-notify --files "*.js, *.html, *.css" &`,
     execLog,
   );
 }
 
-exec(`browser-sync start --server --files "*.js, *.html, *.css"`, execLog);
+if (isOnlyServer) {
+  runServer(onlyServerDirPath);
+} else if (isOnlyPack) {
+  runPack();
+} else if (isCopyAndPackCode) {
+  copyAndPackCode();
+}
