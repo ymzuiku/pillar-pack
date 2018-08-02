@@ -53,7 +53,7 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '-s') {
     sourceFile = argv[i + 1];
   }
-  if (argv[i] === '--public') {
+  if (argv[i] === '-p' || argv[i] === '--public') {
     publicDir = argv[i + 1];
   }
   if (argv[i] === '--prod') {
@@ -114,7 +114,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('help list:');
     console.log('-s : source file');
     console.log('-o : set out dir');
-    console.log('--public : set public dir, defalut ./public');
+    console.log('-p, --public : set public dir, defalut ./public');
     console.log('--prod : use prod mode, only build');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
