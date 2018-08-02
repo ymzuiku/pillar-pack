@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "target": "es3",
+    "allowJs": true,
+    "outDir": "",
+    "sourceMap": true
+  },
+  "include": ["src/**/*"],
+  "exclude": [
+    "node_modules",
+    "**/*.spec.ts",
+    "**/*.css",
+    "**/*.png",
+    "**/*.jpg",
+    "**/*.svg",
+    "**/*.html",
+    "**/*.json",
+    "**/*.md"
+  ]
+}
