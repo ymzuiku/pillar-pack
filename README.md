@@ -2,6 +2,18 @@
 
 > Use parcel, browser-sync
 
+## 缘由
+
+parcel在React项目中还是需要配置`babel`,`transform-runtime`等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于Parcel和browser-sync的打包库。
+
+## 自动配置
+
+首次启动时，使用 `init` 命令
+
+```sh
+$ piller-pack init
+```
+
 ## 约定大于配置
 
 1. 目录来自 `src/index.js` 或者 `src/index.ts`
@@ -9,7 +21,7 @@
 3. 拷贝 `public` 目录至输出目录
 4. 替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的js文件
 
-启动：
+**启动:**
 ```sh
 $ piller-pack
 ```
@@ -37,13 +49,19 @@ $ piller-pack
 
 ## 例子
 
-#### 修改js起始路径
+**安装依赖**
 
 ```sh
-$ piller-pack -s src/app.js
+$ piller-pack init
 ```
 
-#### 以下命令执行了:
+**修改js起始路径, 和启动端口号**
+
+```sh
+$ piller-pack -s src/app.js --port 4100
+```
+
+**其它自定义例子:**
 
 1. 打包 `lib/index.js` 的js为生产版本
 2. 拷贝 `lib/assets`

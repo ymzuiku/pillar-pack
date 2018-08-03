@@ -38,8 +38,10 @@ let isOnlyPack = false;
 let isCopyAndPackCode = true;
 let isOpenBrowser = false;
 let isHot = false;
+let isInit = false;
 let browerParams = '';
-let port = 4010;
+let port = 3100;
+let babelCover = false;
 
 if (!fs.existsSync(sourceFilePath)) {
   sourceFile = `src/index.ts`;
@@ -49,6 +51,9 @@ if (!fs.existsSync(sourceFilePath)) {
 
 // 命令行参数
 for (let i = 0; i < argv.length; i++) {
+  if (argv[i] === 'init') {
+    isInit = true;
+  }
   if (argv[i] === '-o') {
     outDir = argv[i + 1];
   }
@@ -70,6 +75,9 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
   }
+  if (argv[i] === '--babel') {
+    babelCover = true;
+  }
   if (argv[i] === '--rename') {
     bundleName = argv[i + 1];
   }
@@ -88,9 +96,6 @@ for (let i = 0; i < argv.length; i++) {
     } else if (argv[i + 1] === 'false') {
       sourceMap = false;
     }
-  }
-  if (argv[i] === '--target') {
-    targetES3 = argv[i + 1];
   }
   if (argv[i] === '--server') {
     if (argv[i + 1]) {
@@ -114,10 +119,12 @@ for (let i = 0; i < argv.length; i++) {
     isCopyAndPackCode = false;
     console.log(' ');
     console.log('help list:');
+    console.log('init : isInit pack');
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
     console.log('--prod : use prod mode, only build');
+    console.log('--babel : is cover babel file, defaut false');
     console.log('--hot : use hrm mode, no use brower-sync reload');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
@@ -125,7 +132,6 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--no-tsconfig : no auto create tsconfig.json');
     console.log('--no-public : no copy public dir');
     console.log('--source-map : true | false, defalut true');
-    console.log('--target : defalut es3');
     console.log('--pack : only pack js');
     console.log('--server : only use server');
     console.log('--brower-params : set "brower-sync" params');
@@ -161,7 +167,7 @@ async function runPack(...args) {
     target: 'browser', // 浏览器/node/electron, 默认为 browser
     https: false, // 服务器文件使用 https 或者 http，默认为 false
     logLevel: 3, // 3 = 输出所有内容，2 = 输出警告和错误, 1 = 输出错误
-    sourceMaps: sourceMap, // 启用或禁用 sourcemaps，默认为启用(在精简版本中不支持)
+    sourceMaps: isProd ? false : sourceMap, // 启用或禁用 sourcemaps，默认为启用(在精简版本中不支持)
     hmrPort: 0, // hmr socket 运行的端口，默认为随机空闲端口(在 Node.js 中，0 会被解析为随机空闲端口)
     hmrHostname: '127.0.0.1', // 热模块重载的主机名，默认为 ''
     detailedReport: false, // 打印 bundles、资源、文件大小和使用时间的详细报告，默认为 false，只有在禁用监听状态时才打印报告
@@ -188,13 +194,16 @@ function copyAndPackCode() {
   if (isAutoCopyPublicDir) {
     copyPublic({
       publicDirPath,
-      outDir,
+      outDirPath,
       bundleReanme,
       bundleEndName,
-      htmlFile,
+      babelCover,
+      isInit,
     });
   }
-  runPack();
+  if (!isInit) {
+    runPack();
+  }
 }
 
 function packEnd(...args) {
