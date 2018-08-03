@@ -24,7 +24,7 @@ New feature candy of Parcel
 $ npm i -g piller-pack
 ```
 
-## Automatic configuration
+## Init configuration
 
 In first start, need use `init` shell
 
@@ -34,16 +34,25 @@ $ piller-pack init
 
 ## Convention is larger than configuration
 
-1.  Source file from `src/index.js` or `src/index.ts`
-2.  Bundle put out dir to `build`
-3.  Copy `public` dir to out dir
-4.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
+```html
+<body>
+    <!-- add this code -->
+    <script src="bundle-ranme.js"></script>
+<body>
+```
 
 **Start:**
 
 ```sh
 $ piller-pack
 ```
+
+If your project like React defalut projcet, That's all you have to do, they are do this:
+
+1.  Source file from `src/index.js` or `src/index.ts`
+2.  Bundle put out dir to `build`
+3.  Copy `public` dir to out dir
+4.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
 
 ## Custom configuration
 

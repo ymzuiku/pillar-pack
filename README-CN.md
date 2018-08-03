@@ -23,7 +23,7 @@ Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`等其�
 $ npm i -g piller-pack
 ```
 
-## 自动配置
+## 初始化配置
 
 首次启动时，使用 `init` 命令
 
@@ -33,16 +33,27 @@ $ piller-pack init
 
 ## 约定大于配置
 
-1.  目录来自 `src/index.js` 或者 `src/index.ts`
-2.  输出目录至 `build`
-3.  拷贝 `public` 目录至输出目录
-4.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+修改 public/index.html
+
+```html
+<body>
+    <!-- 增加以下这行 -->
+    <script src="bundle-ranme.js"></script>
+<body>
+```
 
 **启动:**
 
 ```sh
 $ piller-pack
 ```
+
+如果你的项目是标准的React库，以上就是你要做的所有，它做了：
+
+1.  目录来自 `src/index.js` 或者 `src/index.ts`
+2.  输出目录至 `build`
+3.  拷贝 `public` 目录至输出目录
+4.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
 
 ## 自定义配置
 
