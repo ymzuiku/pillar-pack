@@ -6,6 +6,7 @@ const { exec } = require('child_process');
 const copyPublic = require('./copyPublic');
 const package = require('../package.json');
 const Bundler = require('parcel-bundler');
+const bs = require('browser-sync').create('pillar-pack');
 
 const {
   execLog,
@@ -37,8 +38,9 @@ let onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 let isOnlyPack = false;
 let isCopyAndPackCode = true;
 let isOpenBrowser = false;
-let isHot = false;
+let isReload = false;
 let isInit = false;
+let isCors = false;
 let browerParams = '';
 let port = 3100;
 let babelCover = false;
@@ -69,8 +71,11 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--port') {
     port = argv[i + 1];
   }
-  if (argv[i] === '--hot') {
-    isHot = true;
+  if (argv[i] === '--cors') {
+    isCors = argv[i + 1];
+  }
+  if (argv[i] === '--reload') {
+    isReload = true;
   }
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
@@ -103,7 +108,7 @@ for (let i = 0; i < argv.length; i++) {
     }
     isOnlyServer = true;
   }
-  if (argv[i] === '--browser' || argv[i] === '-b') {
+  if (argv[i] === '--open') {
     isOpenBrowser = true;
   }
   if (argv[i] === '--pack') {
@@ -124,8 +129,10 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
     console.log('--prod : use prod mode, only build');
+    console.log('--cors : is use brower cors');
+    console.log('--open : is open brower');
     console.log('--babel : is cover babel file, defaut false');
-    console.log('--hot : use hrm mode, no use brower-sync reload');
+    console.log('--reload : use hrm mode, no use brower-sync reload');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
     console.log('--jsx : "react"| "react-native" | "none", defalut: "react"');
@@ -134,7 +141,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--source-map : true | false, defalut true');
     console.log('--pack : only pack js');
     console.log('--server : only use server');
-    console.log('--brower-params : set "brower-sync" params');
+    // console.log('--brower-params : set "brower-sync" params');
     console.log('--version : cat version');
   }
 }
@@ -178,9 +185,9 @@ async function runPack(...args) {
   bundler.on('buildEnd', () => {
     packEnd();
   });
+  console.log('done! build: ' + outDirPath);
   if (!isProd) {
     runServer(outDir);
-    console.log(`open http://127.0.0.1:${port}/${htmlFile}`);
   }
 }
 
@@ -209,16 +216,31 @@ function copyAndPackCode() {
 function packEnd(...args) {
   execLog(...args);
   fs.moveSync(outDirPath + '/index.js', outDirPath + '/' + bundleEndName);
-  console.log('done! build: ' + outDirPath);
 }
 
 function runServer(dir) {
-  exec(
-    `cd ${dir} && node ${bin}/browser-sync start ${
-      isOpenBrowser ? '' : '--browser'
-    } --server ${browerParams} --open ${htmlFile} --port ${port} --serveStatic "./" --no-notify --files "*.js, *.html, *.css" &`,
-    execLog,
-  );
+  bs.init({
+    server: { baseDir: dir, index: htmlFile },
+    port,
+    open: isOpenBrowser,
+    notify: false,
+    watch: isReload,
+    ui: false,
+    cors: isCors,
+    logConnections: false,
+    logLevel: 'warn',
+    // startPath: dir,
+  });
+  bs.watch('*.html, *.js, *.css').on('change', bs.reload);
+  // setTimeout(() => {
+  //   console.log(`open http://127.0.0.1:${port}/${htmlFile}`);
+  // }, 300);
+  // exec(
+  //   `cd ${dir} && node ${bin}/browser-sync start ${
+  //     isOpenBrowser ? '' : '--browser'
+  //   } --server ${browerParams} --open ${htmlFile} --port ${port} --serveStatic "./" --no-inject-changes --no-notify --files "*.js, *.html, *.css" &`,
+  //   execLog,
+  // );
 }
 
 if (isOnlyServer) {
