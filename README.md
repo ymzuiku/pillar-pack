@@ -2,43 +2,52 @@
 
 > Use parcel, browser-sync
 
-## 缘由
+[中文文档](README-CN.md)
 
-parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于 Parcel 和 browser-sync 的打包库。
+## Why use this?
 
-添加的额外功能：
+In React Project, Parcel need install `babel-*` packages, and need config `.babelrc`. And sometimes `Hot Reload` fail.
+Parcel native don't have copy assets feature. So, we have this package. It's juset over parcel, wrapped up in a layer candy.
 
-- 固定由 `javascript` 或 `typescript` 文件作为入口
-- 拷贝资源文件至输出目录
-- 自动替换 `html` 文件中指定的`js`引用，方便我们选择打包库在`html`中的加载顺序
-- 自动配置 `babelrc`
-- 自动安装 `bebel-*` 相关库
-- 使用 `browser-sync` 启动服务, 可以选择性的使用 HRM 或者 Reload-Page
+New feature candy of Parcel
 
-## 自动配置
+- only use `.js` or `.ts` file input, but we can replce `.html` strings.
+- copy assets files to out dir
+- auto replce `.html` string, change `bundle-rename.js` to real bundle.js
+- Automatic configuration `.babelrc`
+- Automatic install about `bebel-*` packages
+- Use `browser-sync` start server, can select Use `HRM` or `Reload-Page`
 
-首次启动时，使用 `init` 命令
+## Install
+
+```sh
+$ npm i -g piller-pack
+```
+
+## Automatic configuration
+
+In first start, need use `init` shell
 
 ```sh
 $ piller-pack init
 ```
 
-## 约定大于配置
+## Convention is larger than configuration
 
-1.  目录来自 `src/index.js` 或者 `src/index.ts`
-2.  输出目录至 `build`
-3.  拷贝 `public` 目录至输出目录
-4.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+1.  Source file from `src/index.js` or `src/index.ts`
+2.  Bundle put out dir to `build`
+3.  Copy `public` dir to out dir
+4.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
 
-**启动:**
+**Start:**
 
 ```sh
 $ piller-pack
 ```
 
-## 自定义配置
+## Custom configuration
 
-要使用其它配置打包，可以在启动时增加参数
+You can add params to change config:
 
 ```js
 -s : source file
@@ -57,27 +66,27 @@ $ piller-pack
 --version : cat version
 ```
 
-## 例子
+## Example
 
-**安装依赖**
+**Install package**
 
 ```sh
 $ piller-pack init
 ```
 
-**修改 js 起始路径, 和启动端口号**
+**change source .js and server port**
 
 ```sh
 $ piller-pack -s src/app.js --port 4100
 ```
 
-**其它自定义例子:**
+**Other custom example:**
 
-1.  打包 `lib/index.js` 的 js 为生产版本
-2.  拷贝 `lib/assets`
-3.  输出至 `build-prod`
-4.  修改 `index.prod.html` 的 html 文件
-5.  不使用 sourceMap
+1.  Use source file in `lib/index.js`
+2.  Copy `lib/assets`
+3.  Bundle out to `build-prod`
+4.  Change `index.prod.html`
+5.  Don't use sourceMap
 
 ```sh
 $ piller-pack -s lib/index.js -c lib/assets -o build-prod --html index.prod.html --source-map false --prod
