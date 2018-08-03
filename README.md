@@ -37,7 +37,7 @@ $ piller-pack init
 ```html
 <body>
     <!-- add this code -->
-    <script src="bundle-ranme.js"></script>
+    <script src="bundle-rename.js"></script>
 <body>
 ```
 

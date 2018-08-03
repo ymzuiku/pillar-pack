@@ -38,7 +38,7 @@ $ piller-pack init
 ```html
 <body>
     <!-- 增加以下这行 -->
-    <script src="bundle-ranme.js"></script>
+    <script src="bundle-rename.js"></script>
 <body>
 ```
 
