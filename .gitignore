@@ -2,6 +2,7 @@
 **/.no-git
 **/.meteor/local
 **/.vscode
+**/test-jsx
 ./release
 **/dev-*
 **/dev-wechat

@@ -22,7 +22,6 @@ module.exports = function({
   htmlFile,
 }) {
   const htmlPath = path.resolve(outDir, htmlFile);
-  fs.copy(publicDirPath, outDir, () => {
-    changeHtml(htmlPath, bundleReanme, bundleEndName);
-  });
+  fs.copySync(publicDirPath, outDir);
+  changeHtml(htmlPath, bundleReanme, bundleEndName);
 };

@@ -29,7 +29,10 @@ function getOutDirPath(file) {
 function getPublicDirPath(file) {
   return path.resolve(process.cwd(), file);
 }
-function getLibFilePath(outPath, sourceFilePath) {
+function getLibFilePath(outPath, sourceFilePath, isTypescript) {
+  if (isTypescript) {
+    return sourceFilePath;
+  }
   return path.resolve(outPath, `lib/${path.basename(sourceFilePath)}`);
 }
 function getOnlyServerDirPath(file) {
@@ -43,6 +46,12 @@ function copyTsConfigAndBabelrc(v, outPath) {
   fs.writeJSONSync(p, v, { encoding: 'utf-8' });
   fs.copyFileSync(babelFrom, babelTo);
 }
+function getIsTypescript(file) {
+  if (file.indexOf('.ts') > -1) {
+    return true;
+  }
+  return false;
+}
 
 module.exports = {
   execLog,
@@ -52,5 +61,6 @@ module.exports = {
   getPublicDirPath,
   getOnlyServerDirPath,
   getLibFilePath,
+  getIsTypescript,
   copyTsConfigAndBabelrc,
 };

@@ -19,9 +19,8 @@
   "homepage": "https://github.com/ymzuiku/pillar-pack#readme",
   "dependencies": {
     "browser-sync": "^2.24.6",
-    "fpack": "^0.5.3",
     "fs-extra": "^7.0.0",
-    "typescript": "^3.0.1"
+    "parcel-bundler": "^1.9.7"
   },
   "bin": {
     "pillar-pack": "bin/index.js"

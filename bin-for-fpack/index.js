@@ -5,8 +5,7 @@ const path = require('path');
 const { exec } = require('child_process');
 const copyPublic = require('./copyPublic');
 const package = require('../package.json');
-const Bundler = require('parcel-bundler');
-
+const tsconfig = require('./tsconfig.json');
 const {
   execLog,
   getSourceDir,
@@ -15,6 +14,8 @@ const {
   getPublicDirPath,
   getOnlyServerDirPath,
   getLibFilePath,
+  getIsTypescript,
+  copyTsConfigAndBabelrc,
 } = require('./utils');
 const argv = process.argv.splice(2);
 
@@ -24,12 +25,17 @@ let publicDir = `public`;
 let publicDirPath = getPublicDirPath(publicDir);
 let outDirPath = getOutDirPath(outDir);
 let sourceFile = `src/index.js`;
+let isTypescript = getIsTypescript(sourceFile);
 let htmlFile = `index.html`;
 let bundleReanme = `bundle-rename.js`;
 let sourceDir = getSourceDir(sourceFile);
 let sourceFilePath = getSourceFilePath(sourceFile);
+let libFilePath = getLibFilePath(outDirPath, sourceFilePath, isTypescript);
 let isProd = false;
+let jsx = 'react';
 let sourceMap = true;
+let targetES3 = 'es3';
+let isAutoCreateTsConfig = true;
 let isAutoCopyPublicDir = true;
 let isOnlyServer = false;
 let onlyServerDir = 'build';
@@ -37,15 +43,10 @@ let onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 let isOnlyPack = false;
 let isCopyAndPackCode = true;
 let isOpenBrowser = false;
-let isHot = false;
-let browerParams = '';
+let tscParams = '';
+let syncParams = '';
+let fpackParams = '';
 let port = 4010;
-
-if (!fs.existsSync(sourceFilePath)) {
-  sourceFile = `src/index.ts`;
-  sourceDir = getSourceDir(sourceFile);
-  sourceFilePath = getSourceFilePath(sourceFile);
-}
 
 // 命令行参数
 for (let i = 0; i < argv.length; i++) {
@@ -63,9 +64,6 @@ for (let i = 0; i < argv.length; i++) {
   }
   if (argv[i] === '--port') {
     port = argv[i + 1];
-  }
-  if (argv[i] === '--hot') {
-    isHot = true;
   }
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
@@ -104,8 +102,14 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--pack') {
     isOnlyPack = true;
   }
-  if (argv[i] === '--brower-params') {
-    browerParams = argv[i + 1];
+  if (argv[i] === '--tsc-params') {
+    tscParams = argv[i + 1];
+  }
+  if (argv[i] === '--fpack-params') {
+    fpackParams = argv[i + 1];
+  }
+  if (argv[i] === '--sync-params') {
+    syncParams = argv[i + 1];
   }
   if (argv[i] === '--version') {
     console.log('pillar-pack: ' + package.version);
@@ -118,7 +122,6 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
     console.log('--prod : use prod mode, only build');
-    console.log('--hot : use hrm mode, no use brower-sync reload');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
     console.log('--jsx : "react"| "react-native" | "none", defalut: "react"');
@@ -128,7 +131,9 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--target : defalut es3');
     console.log('--pack : only pack js');
     console.log('--server : only use server');
-    console.log('--brower-params : set "brower-sync" params');
+    console.log('--tsc-params : set "typescript:tsc" params');
+    console.log('--fpack-params : set "fastpack" params');
+    console.log('--sync-params : set "brower-sync" params');
     console.log('--version : cat version');
   }
 }
@@ -137,45 +142,57 @@ sourceDir = getSourceDir(sourceFile);
 sourceFilePath = getSourceFilePath(sourceFile);
 publicDirPath = getPublicDirPath(publicDir);
 onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
-libFilePath = getLibFilePath(outDirPath, sourceFilePath);
+isTypescript = getIsTypescript(sourceFile);
+libFilePath = getLibFilePath(outDirPath, sourceFilePath, isTypescript);
 let bundleEndName = isProd ? `bundle_${Date.now()}.js` : 'index.js';
 
-async function runPack(...args) {
-  console.log('build...');
-  if (!process.env) {
-    process.env = {};
-  }
-  if (isProd) {
-    process.env.NODE_ENV = 'production';
-  } else {
-    process.env.NODE_ENV = 'development';
-  }
-  const options = {
-    outDir: outDirPath, // 将生成的文件放入输出目录下，默认为 dist
-    outFile: bundleEndName, // 输出文件的名称
-    publicUrl: './', // 静态资源的 url ，默认为 dist
-    watch: true, // 是否需要监听文件并在发生改变时重新编译它们，默认为 process.env.NODE_ENV !== 'production'
-    cache: true, // 启用或禁用缓存，默认为 true
-    cacheDir: '.cache', // 存放缓存的目录，默认为 .cache
-    minify: isProd ? true : false, // 压缩文件，当 process.env.NODE_ENV === 'production' 时，会启用
-    target: 'browser', // 浏览器/node/electron, 默认为 browser
-    https: false, // 服务器文件使用 https 或者 http，默认为 false
-    logLevel: 3, // 3 = 输出所有内容，2 = 输出警告和错误, 1 = 输出错误
-    sourceMaps: sourceMap, // 启用或禁用 sourcemaps，默认为启用(在精简版本中不支持)
-    hmrPort: 0, // hmr socket 运行的端口，默认为随机空闲端口(在 Node.js 中，0 会被解析为随机空闲端口)
-    hmrHostname: '127.0.0.1', // 热模块重载的主机名，默认为 ''
-    detailedReport: false, // 打印 bundles、资源、文件大小和使用时间的详细报告，默认为 false，只有在禁用监听状态时才打印报告
-  };
-  const bundler = new Bundler(sourceFilePath, options);
-  const data = await bundler.bundle();
-  bundler.on('bundled', bundler => {});
-  bundler.on('buildEnd', () => {
-    packEnd();
+// change tsconfig
+if (jsx === 'react' || jsx === 'react-native') {
+  tsconfig.compilerOptions.jsx = jsx;
+}
+tsconfig.compilerOptions.outDir = outDir + '/lib';
+tsconfig.compilerOptions.sourceMap = sourceMap;
+tsconfig.compilerOptions.target = targetES3;
+tsconfig.compilerOptions.watch = !isProd;
+tsconfig.include = [sourceDir + '/**/*'];
+
+function runPack(...args) {
+  setTimeout(() => {
+    console.log(',,', libFilePath);
+    if (isProd) {
+      exec(
+        `
+${bin}/fpack ${libFilePath} \
+    -o ${outDirPath} \
+    --nm "$(pwd)/node_modules" \
+    --nm node_modules \
+    --preprocess='^lib.+\.js$:babel-loader?filename=.babelrc' \
+    --preprocess='\.svg$:file-loader?name=static/media/[name].[hash:8].[ext]&publicPath=http://example.com/' \
+    --preprocess='\.css$:style-loader!css-loader?importLoaders=1!postcss-loader?path=postcss.config.js'
+    ${fpackParams}
+`,
+        packEnd,
+      );
+    } else {
+      setTimeout(() => {
+        exec(
+          `
+  ${bin}/fpack ${libFilePath} \
+    -o ${outDirPath} \
+      -w \
+      --dev \
+      --nm "$(pwd)/node_modules" \
+      --nm node_modules \
+      --preprocess='^lib.+\.js$:babel-loader?filename=.babelrc' \
+      --preprocess='\.svg$:file-loader?name=static/media/[name].[hash:8].[ext]&publicPath=http://example.com/' \
+      --preprocess='\.css$:style-loader!css-loader?importLoaders=1!postcss-loader?path=postcss.config.js'
+      ${fpackParams}
+  `,
+          execLog,
+        );
+      }, 300);
+    }
   });
-  if (!isProd) {
-    runServer(outDir);
-    console.log(`open http://127.0.0.1:${port}/${htmlFile}`);
-  }
 }
 
 function copyAndPackCode() {
@@ -185,6 +202,9 @@ function copyAndPackCode() {
     }
   }
   fs.mkdirpSync(outDirPath);
+  if (isAutoCreateTsConfig) {
+    copyTsConfigAndBabelrc(tsconfig, outDirPath);
+  }
   if (isAutoCopyPublicDir) {
     copyPublic({
       publicDirPath,
@@ -194,7 +214,22 @@ function copyAndPackCode() {
       htmlFile,
     });
   }
-  runPack();
+
+  if (isTypescript) {
+    if (!isProd) {
+      exec(`node ${bin}/tsc ${tscParams} &`, execLog);
+    } else {
+      exec(`node ${bin}/tsc ${tscParams} &`, runPack);
+    }
+  }
+
+  if (!isProd) {
+    runPack();
+    runServer(outDir);
+    console.log('open http://127.0.0.1:' + port);
+  } else {
+    console.log('build...');
+  }
 }
 
 function packEnd(...args) {
@@ -207,7 +242,7 @@ function runServer(dir) {
   exec(
     `cd ${dir} && node ${bin}/browser-sync start ${
       isOpenBrowser ? '' : '--browser'
-    } --server ${browerParams} --open ${htmlFile} --port ${port} --serveStatic "./" --no-notify --files "*.js, *.html, *.css" &`,
+    } --server ${syncParams} --port ${port} --no-notify --files "*.js, *.html, *.css" &`,
     execLog,
   );
 }
