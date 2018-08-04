@@ -5,6 +5,7 @@ const { execLog } = require('./utils');
 const packageToPath = path.resolve(process.cwd(), 'package.json');
 const packageFrom = require('../package.json');
 const packageTo = require(packageToPath);
+const postcssData = require('./postcssrc.json');
 const { exec } = require('child_process');
 let initType = 'script';
 let callback = function() {};
@@ -52,12 +53,17 @@ module.exports = async function({
     });
   }
   const babelPath = path.resolve(process.cwd(), '.babelrc');
+  const postcssPath = path.resolve(process.cwd(), '.postcssrc');
   if (isBabelCover === false && isBabelrc) {
     if (!fs.existsSync(babelPath)) {
       fs.writeJSONSync(babelPath, babel);
     }
+    if(!fs.existsSync(postcssData)) {
+      fs.writeJSONSync(postcssPath, postcssData)
+    }
   } else if (isBabelrc) {
     fs.writeJSONSync(babelPath, babel);
+    fs.writeJSONSync(postcssPath, postcssData)
   }
   if (isInit || initType === 'auto') {
     doInit();

@@ -93,7 +93,7 @@ The project is start:
 ### That's all you have to do, they are do this:
 
 1.  If no have `babel-*` packages, auto install `babel-*` packages
-2.  create `.babelrc` file, and add config in it
+2.  create `.babelrc, .postcssrc` file, and add config in it. support css, less, scss
 3.  Source file from `src/index.js` or `src/index.ts`
 4.  Bundle put out dir to `build`
 5.  Copy `public` dir to out dir

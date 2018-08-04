@@ -4,7 +4,7 @@
 
 ## 缘由
 
-Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于 Parcel 和 browser-sync 的打包库。
+Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`, `postcss`, `scss` 等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于 Parcel 和 browser-sync 的打包库。
 
 ## 安装
 
@@ -92,7 +92,7 @@ $ pillar-pack -s src/index.js -o build -c public --open
 ### 简单几步就从零创建了一个React项目, 它做了：
 
 1. (首次非常耗时) 若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
-2. 创建并配置 .babelrc 文件
+2. 创建并配置 `.babelrc, .postcssrc` 文件, 支持 css, less, scss
 3. 目录来自 `src/index.js` 或者 `src/index.ts`
 4. 输出目录至 `build`
 5. 拷贝 `public` 目录至输出目录
