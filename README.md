@@ -9,24 +9,28 @@
 In React Project, Parcel need install `babel-*` packages, and need config `.babelrc`. And sometimes `Hot Reload` fail.
 Parcel native don't have copy assets feature. So, we have this package. It's juset over parcel, wrapped up in a layer candy.
 
-New feature candy of Parcel
-
-- only use `.js` or `.ts` file input, but we can replce `.html` strings.
-- copy assets files to out dir
-- auto replce `.html` string, change `bundle-rename.js` to real bundle.js
-- Automatic configuration `.babelrc`
-- Automatic install about `bebel-*` packages
-- Use `browser-sync` start server, can select Use `HRM` or `Reload-Page`
-
 ## Install
 
 ```sh
-$ npm i -g piller-pack
+$ npm i -g pillar-pack
 ```
 
-## Convention is larger than configuration
+## Create a `React` project from zero
 
-Example, your project frame like this, it's a defalut `React` project frame
+> Convention is larger than configuration
+
+Create project
+```
+$ mkdir your-project
+$ cd your-project
+$ npm init -y
+$ mkdir public src
+$ touch public/index.html src/index.js
+$ yarn add react react-dom
+```
+
+Now, your project frame like this, it's a defalut `React` project frame
+
 ```sh
 -- public
   - index.html
@@ -35,27 +39,67 @@ $ npm i -g piller-pack
 -- package.json
 ```
 
+set public/index.html
+
 ```html
+<!DOCTYPE html>
+<html lang="en">
+
 <body>
-    <!-- add this code -->
-    <script src="bundle-rename.js"></script>
-<body>
+  <div id="root"></div>
+  <script src="bundle-rename.js"></script>
+</body>
+
+</html>
+```
+
+set src/index.js
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class App extends React.Component {
+  state = {
+    num: 0,
+  };
+  addNum = () => {
+    this.setState({ num: this.state.num + 1 });
+  };
+  render() {
+    return (
+      <div>
+        <h1>Hello pillar-pack</h1>
+        <h2>{this.state.num}</h2>
+        <button onClick={this.addNum}>Add Num</button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 **Start:**
 
 ```sh
-$ piller-pack -s src/index.js -o build -c public
+$ pillar-pack -s src/index.js -o build -c public
 ```
+
+The project is start:
+
+![](.imgs/2018-08-04-13-48-36.png)
 
 ### That's all you have to do, they are do this:
 
 1.  If no have `babel-*` packages, auto install `babel-*` packages
-2.  Source file from `src/index.js` or `src/index.ts`
-3.  Bundle put out dir to `build`
-4.  Copy `public` dir to out dir
-5.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
-
+2.  create `.babelrc` file, and add config in it
+3.  Source file from `src/index.js` or `src/index.ts`
+4.  Bundle put out dir to `build`
+5.  Copy `public` dir to out dir
+6.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
+7.  Use `brower-sync` start server, and replace `parcel-hmr` reload page
+8.  Use system brower open page
 
 ## Default project frame
 
@@ -108,13 +152,13 @@ help list:
 **Install package**
 
 ```sh
-$ piller-pack init
+$ pillar-pack init
 ```
 
 **change source .js and server port**
 
 ```sh
-$ piller-pack -s src/app.js --port 4100
+$ pillar-pack -s src/app.js --port 4100
 ```
 
 **Other custom example:**
@@ -126,7 +170,7 @@ $ piller-pack -s src/app.js --port 4100
 5.  Don't use sourceMap
 
 ```sh
-$ piller-pack \
+$ pillar-pack \
   -s lib/index.js \
   -c lib/assets  \
   -o build-prod \

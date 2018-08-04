@@ -172,7 +172,10 @@ onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 libFilePath = getLibFilePath(outDirPath, sourceFilePath);
 let bundleEndName = isProd ? `bundle_${Date.now()}.js` : 'index.js';
 
-async function runPack(...args) {
+async function runPack() {
+  if(isInit) {
+    return;
+  }
   console.log('build...');
   if (!process.env) {
     process.env = {};
@@ -228,10 +231,8 @@ function copyAndPackCode() {
       isBabelCover,
       isBabelrc,
       isInit,
+      runPack,
     });
-  }
-  if (!isInit) {
-    runPack();
   }
 }
 

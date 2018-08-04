@@ -1,6 +1,4 @@
-# 基于Parcel的零配置打包工具
-
-> Use parcel, browser-sync
+# 基于Brower-sync和Parcel的零配置打包工具
 
 [English Document](README.md)
 
@@ -8,24 +6,29 @@
 
 Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于 Parcel 和 browser-sync 的打包库。
 
-添加的额外功能：
-
-- 固定由 `javascript` 或 `typescript` 文件作为入口
-- 拷贝资源文件至输出目录
-- 自动替换 `html` 文件中指定的`js`引用，方便我们选择打包库在`html`中的加载顺序
-- 自动配置 `babelrc`
-- 自动安装 `bebel-*` 相关库
-- 使用 `browser-sync` 启动服务, 可以选择性的使用 HRM 或者 Reload-Page
-
 ## 安装
 
 ```sh
-$ npm i -g piller-pack
+$ npm i -g pillar-pack
 ```
 
-## 约定大于配置
+## 从零创建一个React项目 
 
-例如,工程结构如下, 这是一个标准的 React 工程结构
+> 约定大于配置
+
+**创建一个工程, 并创建基本的目录和文件**
+
+```sh
+$ mkdir your-project
+$ cd your-project
+$ npm init -y
+$ mkdir public src
+$ touch public/index.html src/index.js
+$ yarn add react react-dom
+```
+
+**当前工程结构如下, 这是一个标准的 React 工程结构**
+
 ```sh
 -- public
   - index.html
@@ -34,28 +37,67 @@ $ npm i -g piller-pack
 -- package.json
 ```
 
-修改 public/index.html
+**编写 public/index.html**
 
 ```html
+<!DOCTYPE html>
+<html lang="en">
+
 <body>
-    <!-- 增加以下这行 -->
-    <script src="bundle-rename.js"></script>
-<body>
+  <div id="root"></div>
+  <script src="bundle-rename.js"></script>
+</body>
+
+</html>
+```
+
+**编写 src/index.js**
+
+```js
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+class App extends React.Component {
+  state = {
+    num: 0,
+  };
+  addNum = () => {
+    this.setState({ num: this.state.num + 1 });
+  };
+  render() {
+    return (
+      <div>
+        <h1>Hello pillar-pack</h1>
+        <h2>{this.state.num}</h2>
+        <button onClick={this.addNum}>Add Num</button>
+      </div>
+    );
+  }
+}
+
+ReactDOM.render(<App />, document.getElementById('root'));
 ```
 
 **启动:**
 
 ```sh
-$ piller-pack -s src/index.js -o build -c public
+$ pillar-pack -s src/index.js -o build -c public --open
 ```
 
-### 以上就是你要做的所有，它做了：
+如图, 项目已启动
+![](.imgs/2018-08-04-13-48-36.png)
+
+### 简单几步就从零创建了一个React项目, 它做了：
 
 1.  若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
 2.  目录来自 `src/index.js` 或者 `src/index.ts`
 3.  输出目录至 `build`
 4.  拷贝 `public` 目录至输出目录
 5.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+6.  使用 `brower-sync` 启动服务, 并代替 `parcel` 的 `hmr-reload` 进行刷新页面
+7.  使用浏览器打开项目
+
+同理, Vue项目, 甚至是 LayaAir 游戏引擎的项目也是一样
 
 ## 标准工程
 
@@ -73,13 +115,12 @@ $ piller-pack -s src/index.js -o build -c public
 $ pillar-pack
 ```
 
----
-
-通常情况, 你不需要继续阅读下文, 除非你需要自定义一些特殊配置
 
 ## 自定义配置
 
-使用 `pillar-pack --help 查看命令列表`, 要使用其它配置打包，可以在启动时增加参数
+使用简单的几个参数,就可以设定输入输出的项目路径,以满足不同结构的项目需要
+
+使用 `pillar-pack --help 查看命令列表`:
 
 ```js
 帮助列表:
@@ -109,7 +150,7 @@ $ pillar-pack
 **修改 js 起始路径, 和启动端口号**
 
 ```sh
-$ piller-pack -s src/app.js --port 4100
+$ pillar-pack -s src/app.js --port 4100
 ```
 
 **其它自定义例子:**
@@ -121,7 +162,7 @@ $ piller-pack -s src/app.js --port 4100
 5.  不使用 sourceMap
 
 ```sh
-$ piller-pack \
+$ pillar-pack \
   -s lib/index.js \
   -c lib/assets  \
   -o build-prod \

@@ -7,6 +7,7 @@ const packageFrom = require('../package.json');
 const packageTo = require(packageToPath);
 const { exec } = require('child_process');
 let initType = 'script';
+let callback = function() {};
 
 function changeHtml(filePath, bundleReanme, bundleEndName) {
   let data = fs.readFileSync(filePath, { encoding: 'utf-8' });
@@ -21,7 +22,7 @@ function changeHtml(filePath, bundleReanme, bundleEndName) {
   }, 30);
 }
 
-module.exports = function({
+module.exports = async function({
   publicDirPath,
   outDirPath,
   bundleReanme,
@@ -29,13 +30,14 @@ module.exports = function({
   isBabelCover,
   isBabelrc,
   isInit,
+  runPack,
 }) {
+  callback = runPack;
   if (!isInit) {
     const nodePathTo = path.resolve(process.cwd(), 'node_modules');
     if (!fs.existsSync(nodePathTo + '/' + 'babel-plugin-transform-runtime')) {
       console.log('Use "pillar-pack init" in new project...');
       initType = 'auto';
-      doInit();
       // throw 'Please first Use "pillar-pack init" in new project';
     }
     if (!fs.existsSync(outDirPath)) {
@@ -57,8 +59,10 @@ module.exports = function({
   } else if (isBabelrc) {
     fs.writeJSONSync(babelPath, babel);
   }
-  if (isInit) {
+  if (isInit || initType === 'auto') {
     doInit();
+  } else {
+    callback();
   }
 };
 
@@ -76,9 +80,10 @@ function doInit() {
 
 function initEnd(...args) {
   execLog(...args);
-  if(initType === 'auto') {
+  if (initType === 'auto') {
     console.log('Init done! Now build code and start Server...');
   } else {
     console.log('Init done! Please use "pillar-pack" in this project');
   }
+  callback();
 }
