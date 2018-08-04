@@ -1,4 +1,6 @@
-# Zero Config Parcel-pack
+# Real Zero Config package tool based on `Brower-sync` and `Parcel`
+
+> Convention is larger than configuration
 
 > Use parcel, browser-sync
 
@@ -16,8 +18,6 @@ $ npm i -g pillar-pack
 ```
 
 ## Create a `React` project from zero
-
-> Convention is larger than configuration
 
 Create project
 ```
