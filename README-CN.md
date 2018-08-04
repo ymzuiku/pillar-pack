@@ -4,7 +4,7 @@
 
 ## 缘由
 
-Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`, `postcss`, `scss` 等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库，所以有了这个基于 Parcel 和 browser-sync 的打包库。
+Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`, `postcss`, `scss` 等其他配置的，并且某些情况的热更新会失效，并且不方便忽略一些不需要打包的库, 不能和webpack一样地引用相对路径的资源文件, 所以有了这个基于 Parcel 和 browser-sync 的打包库。
 
 ## 安装
 
