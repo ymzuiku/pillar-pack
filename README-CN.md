@@ -91,7 +91,7 @@ $ pillar-pack -s src/index.js -o build -c public --open
 
 ### 简单几步就从零创建了一个React项目, 它做了：
 
-1. (首次非常耗时)若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
+1. (首次非常耗时) 若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
 2. 创建并配置 .babelrc 文件
 3. 目录来自 `src/index.js` 或者 `src/index.ts`
 4. 输出目录至 `build`
