@@ -3,8 +3,6 @@
 
 > Convention is larger than configuration
 
-> Use parcel, browser-sync
-
 # [中文文档](README-CN.md)
 
 ## Why use this?
