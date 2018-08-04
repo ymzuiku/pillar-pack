@@ -89,13 +89,14 @@ $ pillar-pack -s src/index.js -o build -c public --open
 
 ### 简单几步就从零创建了一个React项目, 它做了：
 
-1.  若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
-2.  目录来自 `src/index.js` 或者 `src/index.ts`
-3.  输出目录至 `build`
-4.  拷贝 `public` 目录至输出目录
-5.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
-6.  使用 `brower-sync` 启动服务, 并代替 `parcel` 的 `hmr-reload` 进行刷新页面
-7.  使用浏览器打开项目
+1. (首次非常耗时)若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
+2. 创建并配置 .babelrc 文件
+3. 目录来自 `src/index.js` 或者 `src/index.ts`
+4. 输出目录至 `build`
+5. 拷贝 `public` 目录至输出目录
+6. 替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+7. 使用 `brower-sync` 启动服务, 并代替 `parcel` 的 `hmr-reload` 进行刷新页面
+8. 使用浏览器打开项目
 
 同理, Vue项目, 甚至是 LayaAir 游戏引擎的项目也是一样
 
@@ -109,7 +110,7 @@ $ pillar-pack -s src/index.js -o build -c public --open
 -- package.json
 ```
 
-如果你的工程结构是标准的 `React` 工程结构(如上文), 你可以直接使用
+如果你的工程结构是标准的 `React` 工程结构(如上文), 你可以不必加后缀参数, 直接使用
 
 ```sh
 $ pillar-pack
