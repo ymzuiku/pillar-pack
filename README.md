@@ -126,5 +126,11 @@ $ piller-pack -s src/app.js --port 4100
 5.  Don't use sourceMap
 
 ```sh
-$ piller-pack -s lib/index.js -c lib/assets -o build-prod --html index.prod.html --source-map false --prod
+$ piller-pack \
+  -s lib/index.js \
+  -c lib/assets  \
+  -o build-prod \
+  --html index.prod.html \
+  --source-map false \
+  --prod
 ```
