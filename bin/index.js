@@ -71,12 +71,8 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--cors') {
     isCors = argv[i + 1];
   }
-  if (argv[i] === '--reload') {
-    if (argv[i + 1] === 'true') {
-      isReload = true;
-    } else if (argv[i + 1] === 'false') {
-      isReload = false;
-    }
+  if (argv[i] === '--no-reload') {
+    isReload = false;
   }
   if (argv[i] === '--hmr') {
     isHmr = true;
@@ -84,12 +80,8 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
   }
-  if (argv[i] === '--babel') {
-    if (argv[i + 1] === 'true') {
-      isBabelrc = true;
-    } else if (argv[i + 1] === 'false') {
-      isBabelrc = false;
-    }
+  if (argv[i] === '--no-babel') {
+    isBabelrc = false;
   }
   if (argv[i] === '--cover-babel') {
     isBabelCover = true;
@@ -97,13 +89,7 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--rename') {
     bundleName = argv[i + 1];
   }
-  if (argv[i] === '--jsx') {
-    jsx = argv[i + 1];
-  }
-  if (argv[i] === '--no-tsconfig') {
-    isAutoCreateTsConfig = false;
-  }
-  if (argv[i] === '--no-public') {
+  if (argv[i] === '--no-copy') {
     isAutoCopyPublicDir = false;
   }
   if (argv[i] === '--source-map') {
@@ -125,37 +111,57 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--pack') {
     isOnlyPack = true;
   }
-  if (argv[i] === '--brower-params') {
-    browerParams = argv[i + 1];
-  }
   if (argv[i] === '--version') {
     console.log('pillar-pack: ' + package.version);
   }
-  if (argv[i] === '-h' || argv[i] === '--help') {
+  if (argv[i] === '--help') {
     isCopyAndPackCode = false;
     console.log(' ');
     console.log('help list:');
-    console.log('init : isInit pack');
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
+    console.log('--init : Install babel-* in your project');
     console.log('--prod : use prod mode, only build');
     console.log('--cors : is use brower cors');
     console.log('--open : is open brower');
-    console.log('--babel : set create .babelrc file, default true');
-    console.log('--cover-babel : set cover babel file');
-    console.log('--reload : set brower-sync reload');
+    console.log('--no-reload : set brower-sync no reload');
     console.log('--hmr : open hmr, defalut close');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
-    console.log('--jsx : "react"| "react-native" | "none", defalut: "react"');
-    console.log('--no-tsconfig : no auto create tsconfig.json');
-    console.log('--no-public : no copy public dir');
+    console.log('--no-copy : no copy public dir');
+    console.log('--cover-babel : set cover babel file');
+    console.log('--no-babel : set no create .babelrc');
     console.log('--source-map : true | false, defalut true');
     console.log('--pack : only pack js');
     console.log('--server : only use server');
-    // console.log('--brower-params : set "brower-sync" params');
     console.log('--version : cat version');
+    return;
+  }
+  if (argv[i] === '--help-cn') {
+    isCopyAndPackCode = false;
+    console.log(' ');
+    console.log('帮助列表:');
+    console.log('-s : 设置源码路径, 默认 src/index.js ');
+    console.log('-o : 设置输出路径');
+    console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 ./public');
+    console.log('--init : 安装所需 babel-* 在你当前项目');
+    console.log('--prod : 编译项目, 不使用sourceMaps, 不启动服务');
+    console.log('--cors : 打开 brower-sync 的跨域设置');
+    console.log('--open : 启动后自动打开浏览器');
+    console.log('--no-reload : 关闭 brower-sync 的自动更新页面');
+    console.log('--hmr : 打 parcel 开热更新, defalut close');
+    console.log('--html : 设置启动时使用的 .html 文件, 默认 public/index.html');
+    console.log('--rename : 修改编译后会替换的 .html 中的字符, 默认 bundle-rename.js');
+    console.log('--no-copy : 不进行拷贝资源文件');
+    console.log('--cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件');
+    console.log('--no-babel : 不自动创建 .babelrc 文件');
+    console.log('--source-map : true | false 设置是否输出sourceMaps, 默认 true');
+    console.log('--pack : 只使用默认的 parcel 打包项目 ');
+    console.log('--server : 只使用 brower-sync 启动服务');
+    console.log('--version : 查看版本');
+    console.log('--help : 英文帮助列表');
+    return;
   }
 }
 outDirPath = getOutDirPath(outDir);

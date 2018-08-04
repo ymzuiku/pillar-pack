@@ -24,15 +24,16 @@ New feature candy of Parcel
 $ npm i -g piller-pack
 ```
 
-## Init configuration
-
-In first start, need use `init` shell
-
-```sh
-$ piller-pack init
-```
-
 ## Convention is larger than configuration
+
+Example, your project frame like this, it's a defalut `React` project frame
+```sh
+-- public
+  - index.html
+-- src
+  - index.js
+-- package.json
+```
 
 ```html
 <body>
@@ -44,34 +45,62 @@ $ piller-pack init
 **Start:**
 
 ```sh
-$ piller-pack
+$ piller-pack -s src/index.js -o build -c public
 ```
 
-If your project like React defalut projcet, That's all you have to do, they are do this:
+### That's all you have to do, they are do this:
 
-1.  Source file from `src/index.js` or `src/index.ts`
-2.  Bundle put out dir to `build`
-3.  Copy `public` dir to out dir
-4.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
+1.  If no have `babel-*` packages, auto install `babel-*` packages
+2.  Source file from `src/index.js` or `src/index.ts`
+3.  Bundle put out dir to `build`
+4.  Copy `public` dir to out dir
+5.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
+
+---
+
+Usually, you don't need to continue reading,unless you need to custommize some special configurations.
+
+
+## Default project frame
+
+```sh
+-- public
+  - index.html
+-- src
+  - index.js
+-- package.json
+```
+
+If your project is defalut `React` project frame (above paragraphs), your can just use this:
+
+```sh
+$ pillar-pack
+```
+
 
 ## Custom configuration
 
 You can add params to change config:
 
 ```js
+help list:
 -s : source file
 -o : set out dir
 -c, --copy : set copy dir to outDir, defalut ./public
+--init : Install babel-* in your project
 --prod : use prod mode, only build
---hot : use hrm mode, no use brower-sync reload
+--cors : is use brower cors
+--open : is open brower
+--no-reload : set brower-sync no reload
+--hmr : open hmr, defalut close
 --html : set dev server html, default public/index.html
 --rename : change fix bundleName, defalut bundle-rename.js
---jsx : "react"| "react-native" | "none", defalut: "react"
---no-public : no copy public dir
+--no-copy : no copy public dir
+--cover-babel : set cover babel file
+--no-babel : set no create .babelrc
 --source-map : true | false, defalut true
 --pack : only pack js
 --server : only use server
---brower-params : set "brower-sync" params
 --version : cat version
 ```
 

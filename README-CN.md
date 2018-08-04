@@ -23,15 +23,16 @@ Parcel 在 React 项目中还是需要配置 `babel`,`transform-runtime`等其�
 $ npm i -g piller-pack
 ```
 
-## 初始化配置
-
-首次启动时，使用 `init` 命令
-
-```sh
-$ piller-pack init
-```
-
 ## 约定大于配置
+
+例如,工程结构如下, 这是一个标准的 React 工程结构
+```sh
+-- public
+  - index.html
+-- src
+  - index.js
+-- package.json
+```
 
 修改 public/index.html
 
@@ -45,44 +46,65 @@ $ piller-pack init
 **启动:**
 
 ```sh
-$ piller-pack
+$ piller-pack -s src/index.js -o build -c public
 ```
 
-如果你的项目是标准的React库，以上就是你要做的所有，它做了：
+### 以上就是你要做的所有，它做了：
 
-1.  目录来自 `src/index.js` 或者 `src/index.ts`
-2.  输出目录至 `build`
-3.  拷贝 `public` 目录至输出目录
-4.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+1.  若没有安装 `babel-*` 相关依赖, 自动安装 `babel-*` 相关库
+2.  目录来自 `src/index.js` 或者 `src/index.ts`
+3.  输出目录至 `build`
+4.  拷贝 `public` 目录至输出目录
+5.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
+
+---
+
+通常情况, 你不需要继续阅读下文, 除非你需要自定义一些特殊配置
+
+## 标准工程
+
+```sh
+-- public
+  - index.html
+-- src
+  - index.js
+-- package.json
+```
+
+如果你的工程结构是标准的 `React` 工程结构(如上文), 你可以忽略上文, 直接使用
+
+```sh
+$ pillar-pack
+```
 
 ## 自定义配置
 
-要使用其它配置打包，可以在启动时增加参数
+使用 `pillar-pack --help 查看命令列表`, 要使用其它配置打包，可以在启动时增加参数
 
 ```js
--s : source file
--o : set out dir
--c, --copy : set copy dir to outDir, defalut ./public
---prod : use prod mode, only build
---hot : use hrm mode, no use brower-sync reload
---html : set dev server html, default public/index.html
---rename : change fix bundleName, defalut bundle-rename.js
---jsx : "react"| "react-native" | "none", defalut: "react"
---no-public : no copy public dir
---source-map : true | false, defalut true
---pack : only pack js
---server : only use server
---brower-params : set "brower-sync" params
---version : cat version
+帮助列表:
+-s : 设置源码路径, 默认 src/index.js
+-o : 设置输出路径
+-c, --copy : 设置需要拷贝的资源路径, 默认 ./public
+--init : 安装所需 babel-* 在你当前项目
+--prod : 编译项目, 不使用sourceMaps, 不启动服务
+--cors : 打开 brower-sync 的跨域设置
+--open : 启动后自动打开浏览器
+--no-reload : 关闭 brower-sync 的自动更新页面
+--hmr : 打 parcel 开热更新, defalut close
+--html : 设置启动时使用的 .html 文件, 默认 public/index.html
+--rename : 修改编译后会替换的 .html 中的编译文件字符, 默认 bundle-rename.js
+--no-copy : 不进行拷贝资源文件
+--cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件
+--no-babel : 不自动创建 .babelrc 文件
+--source-map : true | false 设置是否输出sourceMaps, 默认 true
+--pack : 只使用默认的 parcel 打包项目
+--server : 只使用 brower-sync 启动服务
+--version : 查看版本
+--help : 英文帮助列表
 ```
 
 ## 例子
-
-**安装依赖**
-
-```sh
-$ piller-pack init
-```
 
 **修改 js 起始路径, 和启动端口号**
 
