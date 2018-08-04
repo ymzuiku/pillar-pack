@@ -1,4 +1,4 @@
-# Real Zero Config package tool based on `Brower-sync` and `Parcel`
+# 基于Brower-sync和Parcel的真正零配置打包工具
 
 > 约定大于配置
 
