@@ -1,5 +1,5 @@
 # Real `Zero config` package tool 
-# Based on `Brower-sync` and `Parcel`
+### Based on `Brower-sync` and `Parcel`
 
 > Convention is larger than configuration
 
