@@ -57,10 +57,6 @@ $ piller-pack -s src/index.js -o build -c public
 4.  拷贝 `public` 目录至输出目录
 5.  替换 `public/index.html` 文件中的 `bundle-rename.js` 文件为打包后的 js 文件
 
----
-
-通常情况, 你不需要继续阅读下文, 除非你需要自定义一些特殊配置
-
 ## 标准工程
 
 ```sh
@@ -71,11 +67,15 @@ $ piller-pack -s src/index.js -o build -c public
 -- package.json
 ```
 
-如果你的工程结构是标准的 `React` 工程结构(如上文), 你可以忽略上文, 直接使用
+如果你的工程结构是标准的 `React` 工程结构(如上文), 你可以直接使用
 
 ```sh
 $ pillar-pack
 ```
+
+---
+
+通常情况, 你不需要继续阅读下文, 除非你需要自定义一些特殊配置
 
 ## 自定义配置
 

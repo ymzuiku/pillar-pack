@@ -56,10 +56,6 @@ $ piller-pack -s src/index.js -o build -c public
 4.  Copy `public` dir to out dir
 5.  Replace in `public/index.html` string of `bundle-rename.js` to real bundle.js
 
----
-
-Usually, you don't need to continue reading,unless you need to custommize some special configurations.
-
 
 ## Default project frame
 
@@ -77,6 +73,9 @@ If your project is defalut `React` project frame (above paragraphs), your can ju
 $ pillar-pack
 ```
 
+---
+
+Usually, you don't need to continue reading,unless you need to custommize some special configurations.
 
 ## Custom configuration
 
