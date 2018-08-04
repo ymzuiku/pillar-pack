@@ -1,6 +1,6 @@
 # 基于Brower-sync和Parcel的真正零配置打包工具
 
-[English Document](README.md)
+# [English Document](README.md)
 
 ## 缘由
 
