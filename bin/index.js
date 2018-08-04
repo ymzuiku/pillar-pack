@@ -144,7 +144,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('帮助列表:');
     console.log('-s : 设置源码路径, 默认 src/index.js ');
     console.log('-o : 设置输出路径');
-    console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 ./public');
+    console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 public');
     console.log('--init : 安装所需 babel-* 在你当前项目');
     console.log('--prod : 编译项目, 不使用sourceMaps, 不启动服务');
     console.log('--cors : 打开 brower-sync 的跨域设置');
