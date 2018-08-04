@@ -2,7 +2,7 @@
 
 > Use parcel, browser-sync
 
-[中文文档](README-CN.md)
+# [中文文档](README-CN.md)
 
 ## Why use this?
 

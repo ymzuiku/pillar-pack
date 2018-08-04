@@ -14,7 +14,7 @@ $ npm i -g pillar-pack
 
 ## 从零创建一个React项目 
 
-我们试试,从一个空白的项目中, 不使用 `create-react-app` 需要多少个步骤可以创建于一个React项目
+我们试试,从一个空白的项目中, 不使用 `create-react-app` 需要多少个步骤可以创建一个React项目
 
 > 约定大于配置
 
