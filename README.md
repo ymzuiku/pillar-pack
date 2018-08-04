@@ -1,4 +1,4 @@
-# Real zero config package tool 
+# Real `Zero config` package tool 
 # Based on `Brower-sync` and `Parcel`
 
 > Convention is larger than configuration
