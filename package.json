@@ -1,6 +1,6 @@
 {
   "name": "pillar-pack",
-  "version": "0.2.4",
+  "version": "1.2.5",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -29,8 +29,7 @@
     "babel-preset-env": "^1.7.0",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-0": "^6.24.1",
-    "babel-runtime": "^6.26.0",
-    "parcel-bundler": "^1.9.7"
+    "babel-runtime": "^6.26.0"
   },
   "bin": {
     "pillar-pack": "bin/index.js"

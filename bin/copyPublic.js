@@ -25,10 +25,15 @@ module.exports = function({
   outDirPath,
   bundleReanme,
   bundleEndName,
-  babelCover,
+  isBabelCover,
+  isBabelrc,
   isInit,
 }) {
   if (!isInit) {
+    const nodePathTo = path.resolve(process.cwd(), 'node_modules');
+    if (!fs.existsSync(nodePathTo + '/' + 'babel-plugin-transform-runtime')) {
+      throw 'Please first Use "pillar-pack init" in new project';
+    }
     if (!fs.existsSync(outDirPath)) {
       fs.mkdirpSync(outDirPath);
     }
@@ -41,11 +46,11 @@ module.exports = function({
     });
   }
   const babelPath = path.resolve(process.cwd(), '.babelrc');
-  if (babelCover === false) {
+  if (isBabelCover === false && isBabelrc) {
     if (!fs.existsSync(babelPath)) {
       fs.writeJSONSync(babelPath, babel);
     }
-  } else {
+  } else if (isBabelrc) {
     fs.writeJSONSync(babelPath, babel);
   }
   if (isInit) {
@@ -57,24 +62,11 @@ module.exports = function({
     });
     fs.writeJSONSync(packageToPath, packageTo);
     console.log('install babel-plugins...');
-    exec('yarn install', execLog);
+    exec('yarn install', initEnd);
   }
-  // if (false) {
-  //   const nodePathFrom = path.resolve(__dirname, '../node_modules');
-  //   const nodePathTo = path.resolve(process.cwd(), 'node_modules');
-  //   fs.mkdirpSync(nodePathTo);
-  //   const packs = fs.readdirSync(nodePathFrom);
-  //   const needCopyFiles = ['babel-', 'esutils'];
-  //   for (let i = 0; i < packs.length; i++) {
-  //     let needCopy = true;
-  //     needCopyFiles.forEach(v => {
-  //       if (packs[i].indexOf(v) > -1) {
-  //         needCopy = false;
-  //       }
-  //     });
-  //     if (needCopy && !fs.existsSync(nodePathTo + '/' + packs[i])) {
-  //       fs.copySync(nodePathFrom + '/' + packs[i], nodePathTo + '/' + packs[i]);
-  //     }
-  //   }
-  // }
 };
+
+function initEnd(...args) {
+  execLog(...args);
+  console.log('Init done! Please use "pillar-pack" in this project');
+}

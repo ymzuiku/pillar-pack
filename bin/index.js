@@ -1,8 +1,6 @@
 #!/usr/bin/env node
 
 const fs = require('fs-extra');
-const path = require('path');
-const { exec } = require('child_process');
 const copyPublic = require('./copyPublic');
 const package = require('../package.json');
 const Bundler = require('parcel-bundler');
@@ -19,7 +17,6 @@ const {
 } = require('./utils');
 const argv = process.argv.splice(2);
 
-let bin = path.resolve(__dirname, '../node_modules/.bin');
 let outDir = `build`;
 let publicDir = `public`;
 let publicDirPath = getPublicDirPath(publicDir);
@@ -27,7 +24,6 @@ let outDirPath = getOutDirPath(outDir);
 let sourceFile = `src/index.js`;
 let htmlFile = `index.html`;
 let bundleReanme = `bundle-rename.js`;
-let sourceDir = getSourceDir(sourceFile);
 let sourceFilePath = getSourceFilePath(sourceFile);
 let isProd = false;
 let sourceMap = true;
@@ -38,12 +34,13 @@ let onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 let isOnlyPack = false;
 let isCopyAndPackCode = true;
 let isOpenBrowser = false;
-let isReload = false;
+let isReload = true;
 let isInit = false;
+let isHmr = false;
 let isCors = false;
-let browerParams = '';
 let port = 3100;
-let babelCover = false;
+let isBabelCover = false;
+let isBabelrc = true;
 
 if (!fs.existsSync(sourceFilePath)) {
   sourceFile = `src/index.ts`;
@@ -75,13 +72,27 @@ for (let i = 0; i < argv.length; i++) {
     isCors = argv[i + 1];
   }
   if (argv[i] === '--reload') {
-    isReload = true;
+    if (argv[i + 1] === 'true') {
+      isReload = true;
+    } else if (argv[i + 1] === 'false') {
+      isReload = false;
+    }
+  }
+  if (argv[i] === '--hmr') {
+    isHmr = true;
   }
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
   }
   if (argv[i] === '--babel') {
-    babelCover = true;
+    if (argv[i + 1] === 'true') {
+      isBabelrc = true;
+    } else if (argv[i + 1] === 'false') {
+      isBabelrc = false;
+    }
+  }
+  if (argv[i] === '--cover-babel') {
+    isBabelCover = true;
   }
   if (argv[i] === '--rename') {
     bundleName = argv[i + 1];
@@ -131,8 +142,10 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--prod : use prod mode, only build');
     console.log('--cors : is use brower cors');
     console.log('--open : is open brower');
-    console.log('--babel : is cover babel file, defaut false');
-    console.log('--reload : use hrm mode, no use brower-sync reload');
+    console.log('--babel : set create .babelrc file, default true');
+    console.log('--cover-babel : set cover babel file');
+    console.log('--reload : set brower-sync reload');
+    console.log('--hmr : open hmr, defalut close');
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
     console.log('--jsx : "react"| "react-native" | "none", defalut: "react"');
@@ -175,6 +188,7 @@ async function runPack(...args) {
     https: false, // 服务器文件使用 https 或者 http，默认为 false
     logLevel: 3, // 3 = 输出所有内容，2 = 输出警告和错误, 1 = 输出错误
     sourceMaps: isProd ? false : sourceMap, // 启用或禁用 sourcemaps，默认为启用(在精简版本中不支持)
+    hmr: isHmr,
     hmrPort: 0, // hmr socket 运行的端口，默认为随机空闲端口(在 Node.js 中，0 会被解析为随机空闲端口)
     hmrHostname: '127.0.0.1', // 热模块重载的主机名，默认为 ''
     detailedReport: false, // 打印 bundles、资源、文件大小和使用时间的详细报告，默认为 false，只有在禁用监听状态时才打印报告
@@ -185,9 +199,10 @@ async function runPack(...args) {
   bundler.on('buildEnd', () => {
     packEnd();
   });
-  console.log('done! build: ' + outDirPath);
   if (!isProd) {
     runServer(outDir);
+  } else {
+    console.log('done! build: ' + outDirPath);
   }
 }
 
@@ -204,7 +219,8 @@ function copyAndPackCode() {
       outDirPath,
       bundleReanme,
       bundleEndName,
-      babelCover,
+      isBabelCover,
+      isBabelrc,
       isInit,
     });
   }
@@ -229,18 +245,8 @@ function runServer(dir) {
     cors: isCors,
     logConnections: false,
     logLevel: 'warn',
-    // startPath: dir,
   });
   bs.watch('*.html, *.js, *.css').on('change', bs.reload);
-  // setTimeout(() => {
-  //   console.log(`open http://127.0.0.1:${port}/${htmlFile}`);
-  // }, 300);
-  // exec(
-  //   `cd ${dir} && node ${bin}/browser-sync start ${
-  //     isOpenBrowser ? '' : '--browser'
-  //   } --server ${browerParams} --open ${htmlFile} --port ${port} --serveStatic "./" --no-inject-changes --no-notify --files "*.js, *.html, *.css" &`,
-  //   execLog,
-  // );
 }
 
 if (isOnlyServer) {
