@@ -31,6 +31,7 @@ module.exports = async function({
   isBabelCover,
   isBabelrc,
   isInit,
+  isCss,
   runPack,
   isOnlyPack,
 }) {
@@ -79,8 +80,11 @@ function doInit() {
   if (!packageTo.devDependencies) {
     packageTo.devDependencies = {};
   }
-  Object.keys(packageFrom.copyDevDependencies).forEach(k => {
-    packageTo.devDependencies[k] = packageFrom.copyDevDependencies[k];
+  Object.keys(packageFrom.babel).forEach(k => {
+    packageTo.devDependencies[k] = packageFrom.babel[k];
+  });
+  Object.keys(packageFrom.css).forEach(k => {
+    packageTo.devDependencies[k] = packageFrom.css[k];
   });
   fs.writeJSONSync(packageToPath, packageTo);
   console.log('install babel-plugins...');

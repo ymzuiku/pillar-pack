@@ -12,7 +12,6 @@ const {
   getSourceFilePath,
   getOutDirPath,
   getPublicDirPath,
-  getOnlyServerDirPath,
   getLibFilePath,
 } = require('./utils');
 const argv = process.argv.splice(2);
@@ -30,12 +29,12 @@ let sourceMap = true;
 let isAutoCopyPublicDir = true;
 let isOnlyServer = false;
 let onlyServerDir = 'build';
-let onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 let isOnlyPack = false;
 let isCopyAndPackCode = true;
 let isOpenBrowser = false;
 let isReload = true;
 let isInit = false;
+let isCss = false;
 let isHmr = false;
 let isCors = false;
 let port = 3100;
@@ -84,6 +83,9 @@ for (let i = 0; i < argv.length; i++) {
   }
   if (argv[i] === '--html') {
     htmlFile = argv[i + 1];
+  }
+  if (argv[i] === '--scss') {
+    isCss = true;
   }
   if (argv[i] === '--no-babel') {
     isBabelrc = false;
@@ -136,6 +138,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--html : set dev server html, default public/index.html');
     console.log('--rename : change fix bundleName, defalut bundle-rename.js');
     console.log('--no-copy : no copy public dir');
+    console.log('--scss : install scss package');
     console.log('--cover-babel : set cover babel file');
     console.log('--no-babel : set no create .babelrc');
     console.log('--source-map : true | false, defalut true');
@@ -162,6 +165,7 @@ for (let i = 0; i < argv.length; i++) {
       '--rename : 修改编译后会替换的 .html 中的字符, 默认 bundle-rename.js',
     );
     console.log('--no-copy : 不进行拷贝资源文件');
+    console.log('--scss : 安装scss相关包');
     console.log(
       '--cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件',
     );
@@ -179,7 +183,6 @@ outDirPath = getOutDirPath(outDir);
 sourceDir = getSourceDir(sourceFile);
 sourceFilePath = getSourceFilePath(sourceFile);
 publicDirPath = getPublicDirPath(publicDir);
-onlyServerDirPath = getOnlyServerDirPath(onlyServerDir);
 libFilePath = getLibFilePath(outDirPath, sourceFilePath);
 let bundleEndName = isProd ? `bundle_${Date.now()}.js` : 'index.js';
 
@@ -245,6 +248,7 @@ function copyAndPackCode() {
       isBabelCover,
       isBabelrc,
       isInit,
+      isCss,
       runPack,
       isOnlyPack,
     });

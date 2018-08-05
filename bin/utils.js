@@ -32,9 +32,6 @@ function getPublicDirPath(file) {
 function getLibFilePath(outPath, sourceFilePath) {
   return path.resolve(outPath, `lib/${path.basename(sourceFilePath)}`);
 }
-function getOnlyServerDirPath(file) {
-  return path.resolve(process.cwd(), file);
-}
 function copyTsConfigAndBabelrc(v, outPath) {
   const p = path.resolve(process.cwd(), 'tsconfig.json');
   const babelFrom = path.resolve(__dirname, '.babelrc');
@@ -50,7 +47,6 @@ module.exports = {
   getSourceFilePath,
   getOutDirPath,
   getPublicDirPath,
-  getOnlyServerDirPath,
   getLibFilePath,
   copyTsConfigAndBabelrc,
 };
