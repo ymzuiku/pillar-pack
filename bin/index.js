@@ -46,6 +46,11 @@ if (!fs.existsSync(sourceFilePath)) {
   sourceFile = `src/index.ts`;
   sourceDir = getSourceDir(sourceFile);
   sourceFilePath = getSourceFilePath(sourceFile);
+  if(!fs.existsSync(sourceFilePath)) {
+    sourceFile = `src/index.tsx`;
+    sourceDir = getSourceDir(sourceFile);
+    sourceFilePath = getSourceFilePath(sourceFile);
+  }
 }
 
 // 命令行参数
