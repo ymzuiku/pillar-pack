@@ -32,6 +32,7 @@ module.exports = async function({
   isBabelrc,
   isInit,
   runPack,
+  isOnlyPack,
 }) {
   callback = runPack;
   if (!isInit) {
@@ -41,10 +42,12 @@ module.exports = async function({
       initType = 'auto';
       // throw 'Please first Use "pillar-pack init" in new project';
     }
-    if (!fs.existsSync(outDirPath)) {
-      fs.mkdirpSync(outDirPath);
+    if (isOnlyPack === false) {
+      if (!fs.existsSync(outDirPath)) {
+        fs.mkdirpSync(outDirPath);
+      }
+      fs.copySync(publicDirPath, outDirPath);
     }
-    fs.copySync(publicDirPath, outDirPath);
     fs.readdirSync(outDirPath).forEach(v => {
       if (v.indexOf('.html') > 0) {
         const htmlPath = path.resolve(outDirPath, v);
@@ -58,12 +61,12 @@ module.exports = async function({
     if (!fs.existsSync(babelPath)) {
       fs.writeJSONSync(babelPath, babel);
     }
-    if(!fs.existsSync(postcssData)) {
-      fs.writeJSONSync(postcssPath, postcssData)
+    if (!fs.existsSync(postcssData)) {
+      fs.writeJSONSync(postcssPath, postcssData);
     }
   } else if (isBabelrc) {
     fs.writeJSONSync(babelPath, babel);
-    fs.writeJSONSync(postcssPath, postcssData)
+    fs.writeJSONSync(postcssPath, postcssData);
   }
   if (isInit || initType === 'auto') {
     doInit();

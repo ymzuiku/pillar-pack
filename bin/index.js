@@ -108,7 +108,7 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--open') {
     isOpenBrowser = true;
   }
-  if (argv[i] === '--pack') {
+  if (argv[i] === 'build') {
     isOnlyPack = true;
   }
   if (argv[i] === '--version') {
@@ -121,7 +121,8 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
-    console.log('--init : Install babel-* in your project');
+    console.log('init : Install babel-* in your project');
+    console.log('build : only pack js');
     console.log('--prod : use prod mode, only build');
     console.log('--cors : is use brower cors');
     console.log('--open : is open brower');
@@ -133,7 +134,6 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--cover-babel : set cover babel file');
     console.log('--no-babel : set no create .babelrc');
     console.log('--source-map : true | false, defalut true');
-    console.log('--pack : only pack js');
     console.log('--server : only use server');
     console.log('--version : cat version');
     return;
@@ -145,19 +145,25 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-s : 设置源码路径, 默认 src/index.js ');
     console.log('-o : 设置输出路径');
     console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 public');
-    console.log('--init : 安装所需 babel-* 在你当前项目');
+    console.log('init : 安装所需 babel-* 在你当前项目');
+    console.log('build : 只使用默认的 parcel 打包项目 ');
     console.log('--prod : 编译项目, 不使用sourceMaps, 不启动服务');
     console.log('--cors : 打开 brower-sync 的跨域设置');
     console.log('--open : 启动后自动打开浏览器');
     console.log('--no-reload : 关闭 brower-sync 的自动更新页面');
     console.log('--hmr : 打 parcel 开热更新, defalut close');
     console.log('--html : 设置启动时使用的 .html 文件, 默认 public/index.html');
-    console.log('--rename : 修改编译后会替换的 .html 中的字符, 默认 bundle-rename.js');
+    console.log(
+      '--rename : 修改编译后会替换的 .html 中的字符, 默认 bundle-rename.js',
+    );
     console.log('--no-copy : 不进行拷贝资源文件');
-    console.log('--cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件');
+    console.log(
+      '--cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件',
+    );
     console.log('--no-babel : 不自动创建 .babelrc 文件');
-    console.log('--source-map : true | false 设置是否输出sourceMaps, 默认 true');
-    console.log('--pack : 只使用默认的 parcel 打包项目 ');
+    console.log(
+      '--source-map : true | false 设置是否输出sourceMaps, 默认 true',
+    );
     console.log('--server : 只使用 brower-sync 启动服务');
     console.log('--version : 查看版本');
     console.log('--help : 英文帮助列表');
@@ -173,7 +179,10 @@ libFilePath = getLibFilePath(outDirPath, sourceFilePath);
 let bundleEndName = isProd ? `bundle_${Date.now()}.js` : 'index.js';
 
 async function runPack() {
-  if(isInit) {
+  if (isOnlyServer) {
+    return;
+  }
+  if (isInit) {
     return;
   }
   console.log('build...');
@@ -189,7 +198,7 @@ async function runPack() {
     outDir: outDirPath, // 将生成的文件放入输出目录下，默认为 dist
     outFile: bundleEndName, // 输出文件的名称
     publicUrl: './', // 静态资源的 url ，默认为 dist
-    watch: true, // 是否需要监听文件并在发生改变时重新编译它们，默认为 process.env.NODE_ENV !== 'production'
+    watch: isOnlyPack ? false : true, // 是否需要监听文件并在发生改变时重新编译它们，默认为 process.env.NODE_ENV !== 'production'
     cache: true, // 启用或禁用缓存，默认为 true
     cacheDir: '.cache', // 存放缓存的目录，默认为 .cache
     minify: isProd ? true : false, // 压缩文件，当 process.env.NODE_ENV === 'production' 时，会启用
@@ -232,6 +241,7 @@ function copyAndPackCode() {
       isBabelrc,
       isInit,
       runPack,
+      isOnlyPack,
     });
   }
 }
@@ -242,8 +252,11 @@ function packEnd(...args) {
 }
 
 function runServer(dir) {
+  if (isOnlyPack) {
+    return;
+  }
   bs.init({
-    server: { baseDir: dir, index: htmlFile },
+    server: { baseDir: dir, index: htmlFile, directory: true },
     port,
     open: isOpenBrowser,
     notify: false,
@@ -254,12 +267,9 @@ function runServer(dir) {
     logLevel: 'warn',
   });
   bs.watch('*.html, *.js, *.css').on('change', bs.reload);
+  console.log(`http://127.0.0.1:${port}/${htmlFile}`);
 }
 
-if (isOnlyServer) {
-  runServer(onlyServerDirPath);
-} else if (isOnlyPack) {
-  runPack();
-} else if (isCopyAndPackCode) {
+if (isCopyAndPackCode) {
   copyAndPackCode();
 }
