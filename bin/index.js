@@ -123,8 +123,7 @@ for (let i = 0; i < argv.length; i++) {
   }
   if (argv[i] === '--help') {
     isCopyAndPackCode = false;
-    console.log(' ');
-    console.log('help list:');
+    console.log('---------- ');
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
@@ -144,12 +143,13 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--source-map : true | false, defalut true');
     console.log('--server : only use server');
     console.log('--version : cat version');
+    console.log('--help : help list');
+    console.log('--help-cn : Chinese help list');
     return;
   }
   if (argv[i] === '--help-cn') {
     isCopyAndPackCode = false;
-    console.log(' ');
-    console.log('帮助列表:');
+    console.log('---------- ');
     console.log('-s : 设置源码路径, 默认 src/index.js ');
     console.log('-o : 设置输出路径');
     console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 public');
@@ -176,6 +176,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('--server : 只使用 brower-sync 启动服务');
     console.log('--version : 查看版本');
     console.log('--help : 英文帮助列表');
+    console.log('--help-cn : 中文帮助列表');
     return;
   }
 }

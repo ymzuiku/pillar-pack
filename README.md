@@ -125,12 +125,11 @@ Usually, you don't need to continue reading,unless you need to custommize some s
 You can add params to change config:
 
 ```js
-help list:
 -s : source file
 -o : set out dir
 -c, --copy : set copy dir to outDir, defalut ./public
 init : Install babel-* in your project
---dll : Build a dll.js file
+--dll : only pack js to one dll.js
 --prod : use prod mode, only build
 --cors : is use brower cors
 --open : is open brower
@@ -139,12 +138,14 @@ init : Install babel-* in your project
 --html : set dev server html, default public/index.html
 --rename : change fix bundleName, defalut bundle-rename.js
 --no-copy : no copy public dir
+--scss : install scss package
 --cover-babel : set cover babel file
 --no-babel : set no create .babelrc
 --source-map : true | false, defalut true
---pack : only pack js
 --server : only use server
 --version : cat version
+--help : help list
+--help-cn : Chinese help list
 ```
 
 ## Example

@@ -126,27 +126,27 @@ $ pillar-pack
 使用 `pillar-pack --help 查看命令列表`:
 
 ```js
-帮助列表:
 -s : 设置源码路径, 默认 src/index.js
 -o : 设置输出路径
 -c, --copy : 设置需要拷贝的资源路径, 默认 public
 init : 安装所需 babel-* 在你当前项目
---dll : 编译成一个dll文件
+--dll : 只使用默认的 parcel 打包项目
 --prod : 编译项目, 不使用sourceMaps, 不启动服务
 --cors : 打开 brower-sync 的跨域设置
 --open : 启动后自动打开浏览器
 --no-reload : 关闭 brower-sync 的自动更新页面
 --hmr : 打 parcel 开热更新, defalut close
 --html : 设置启动时使用的 .html 文件, 默认 public/index.html
---rename : 修改编译后会替换的 .html 中的编译文件字符, 默认 bundle-rename.js
+--rename : 修改编译后会替换的 .html 中的字符, 默认 bundle-rename.js
 --no-copy : 不进行拷贝资源文件
+--scss : 安装scss相关包
 --cover-babel : 创建 .babelrc 文件时, 覆盖原有的 .babelrc 文件
 --no-babel : 不自动创建 .babelrc 文件
 --source-map : true | false 设置是否输出sourceMaps, 默认 true
---pack : 只使用默认的 parcel 打包项目
 --server : 只使用 brower-sync 启动服务
 --version : 查看版本
 --help : 英文帮助列表
+--help-cn : 中文帮助列表
 ```
 
 ## 例子
