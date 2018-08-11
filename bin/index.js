@@ -54,7 +54,7 @@ if (!fs.existsSync(sourceFilePath)) {
 
 // 命令行参数
 for (let i = 0; i < argv.length; i++) {
-  if (argv[i] === 'init') {
+  if (argv[i] === '--init') {
     isInit = true;
   }
   if (argv[i] === '-o') {
@@ -115,7 +115,7 @@ for (let i = 0; i < argv.length; i++) {
   if (argv[i] === '--open') {
     isOpenBrowser = true;
   }
-  if (argv[i] === 'build') {
+  if (argv[i] === '--dll') {
     isOnlyPack = true;
   }
   if (argv[i] === '--version') {
@@ -128,8 +128,8 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
-    console.log('init : Install babel-* in your project');
-    console.log('build : only pack js');
+    console.log('--init : Install babel-* in your project');
+    console.log('--dll : only pack js to one dll.js');
     console.log('--prod : use prod mode, only build');
     console.log('--cors : is use brower cors');
     console.log('--open : is open brower');
@@ -154,7 +154,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-o : 设置输出路径');
     console.log('-c, --copy : 设置需要拷贝的资源路径, 默认 public');
     console.log('init : 安装所需 babel-* 在你当前项目');
-    console.log('build : 只使用默认的 parcel 打包项目 ');
+    console.log('--dll : 只使用默认的 parcel 打包项目 ');
     console.log('--prod : 编译项目, 不使用sourceMaps, 不启动服务');
     console.log('--cors : 打开 brower-sync 的跨域设置');
     console.log('--open : 启动后自动打开浏览器');

@@ -130,6 +130,7 @@ help list:
 -o : set out dir
 -c, --copy : set copy dir to outDir, defalut ./public
 --init : Install babel-* in your project
+--dll : Build a dll.js file
 --prod : use prod mode, only build
 --cors : is use brower cors
 --open : is open brower

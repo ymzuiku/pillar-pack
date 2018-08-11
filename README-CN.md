@@ -131,6 +131,7 @@ $ pillar-pack
 -o : 设置输出路径
 -c, --copy : 设置需要拷贝的资源路径, 默认 public
 --init : 安装所需 babel-* 在你当前项目
+--dll : 编译成一个dll文件
 --prod : 编译项目, 不使用sourceMaps, 不启动服务
 --cors : 打开 brower-sync 的跨域设置
 --open : 启动后自动打开浏览器
