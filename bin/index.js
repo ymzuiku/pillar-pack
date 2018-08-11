@@ -54,7 +54,7 @@ if (!fs.existsSync(sourceFilePath)) {
 
 // 命令行参数
 for (let i = 0; i < argv.length; i++) {
-  if (argv[i] === '--init') {
+  if (argv[i] === 'init') {
     isInit = true;
   }
   if (argv[i] === '-o') {
@@ -128,7 +128,7 @@ for (let i = 0; i < argv.length; i++) {
     console.log('-s : source file');
     console.log('-o : set out dir');
     console.log('-c, --copy : set copy dir to outDir, defalut ./public');
-    console.log('--init : Install babel-* in your project');
+    console.log('init : Install babel-* in your project');
     console.log('--dll : only pack js to one dll.js');
     console.log('--prod : use prod mode, only build');
     console.log('--cors : is use brower cors');
