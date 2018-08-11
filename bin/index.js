@@ -34,7 +34,7 @@ let isCopyAndPackCode = true;
 let isOpenBrowser = false;
 let isReload = true;
 let isInit = false;
-let isCss = false;
+let isScss = false;
 let isHmr = false;
 let isCors = false;
 let port = 3100;
@@ -85,7 +85,7 @@ for (let i = 0; i < argv.length; i++) {
     htmlFile = argv[i + 1];
   }
   if (argv[i] === '--scss') {
-    isCss = true;
+    isScss = true;
   }
   if (argv[i] === '--no-babel') {
     isBabelrc = false;
@@ -248,7 +248,7 @@ function copyAndPackCode() {
       isBabelCover,
       isBabelrc,
       isInit,
-      isCss,
+      isScss,
       runPack,
       isOnlyPack,
     });

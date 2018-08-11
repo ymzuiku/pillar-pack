@@ -8,6 +8,7 @@ const packageTo = require(packageToPath);
 const postcssData = require('./postcssrc.json');
 const { exec } = require('child_process');
 let initType = 'script';
+let isScss = false;
 let callback = function() {};
 
 function changeHtml(filePath, bundleReanme, bundleEndName) {
@@ -31,11 +32,12 @@ module.exports = async function({
   isBabelCover,
   isBabelrc,
   isInit,
-  isCss,
+  isScss,
   runPack,
   isOnlyPack,
 }) {
   callback = runPack;
+  isScss = isScss;
   if (!isInit) {
     const nodePathTo = path.resolve(process.cwd(), 'node_modules');
     if (!fs.existsSync(nodePathTo + '/' + 'babel-plugin-transform-runtime')) {
@@ -80,12 +82,14 @@ function doInit() {
   if (!packageTo.devDependencies) {
     packageTo.devDependencies = {};
   }
-  Object.keys(packageFrom.babel).forEach(k => {
-    packageTo.devDependencies[k] = packageFrom.babel[k];
+  Object.keys(packageFrom.pack_babel).forEach(k => {
+    packageTo.devDependencies[k] = packageFrom.pack_babel[k];
   });
-  Object.keys(packageFrom.css).forEach(k => {
-    packageTo.devDependencies[k] = packageFrom.css[k];
-  });
+  if (isScss) {
+    Object.keys(packageFrom.pack_scss).forEach(k => {
+      packageTo.devDependencies[k] = packageFrom.pack_scss[k];
+    });
+  }
   fs.writeJSONSync(packageToPath, packageTo);
   console.log('install babel-plugins...');
   exec('yarn install', initEnd);
