@@ -49,7 +49,9 @@ module.exports = async function({
       if (!fs.existsSync(outDirPath)) {
         fs.mkdirpSync(outDirPath);
       }
-      fs.copySync(publicDirPath, outDirPath);
+      if (fs.existsSync(publicDirPath)) {
+        fs.copySync(publicDirPath, outDirPath);
+      }
     }
     fs.readdirSync(outDirPath).forEach(v => {
       if (v.indexOf('.html') > 0) {
