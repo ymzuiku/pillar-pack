@@ -90,6 +90,9 @@ function doInit() {
       packageTo.devDependencies[k] = packageFrom.pack_scss[k];
     });
   }
+  if (!packageTo.scripts) packageTo.scripts = {};
+  packageTo.scripts.babel = `"./node_modules/.bin/babel src --out-dir lib"`
+  
   fs.writeJSONSync(packageToPath, packageTo);
   console.log('install babel-plugins...');
   exec('yarn install', initEnd);
