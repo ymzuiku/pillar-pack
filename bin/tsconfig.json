@@ -1,23 +1,7 @@
 {
   "compilerOptions": {
-    "module": "es2015",
-    "noImplicitAny": true,
-    "removeComments": true,
-    "preserveConstEnums": true,
-    "target": "es3",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "scripthost",
-      "es5",
-      "es6",
-      "es2015",
-      "es2015.promise",
-      "es2015.proxy",
-      "es2015.core",
-      "es2015.symbol",
-      "es2015.generator"
-    ],
+    "skipLibCheck": true,
+    "target": "es5",
     "allowJs": true,
     "outDir": "",
     "watch": true,
