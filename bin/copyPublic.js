@@ -40,7 +40,7 @@ module.exports = async function({
   isScss = isScss;
   if (!isInit) {
     const nodePathTo = path.resolve(process.cwd(), 'node_modules');
-    if (!fs.existsSync(nodePathTo + '/' + 'babel-plugin-transform-runtime')) {
+    if (!packageTo.devDependencies || !packageTo.devDependencies['babel-plugin-transform-runtime']) {
       console.log('Use "pillar-pack init" in new project...');
       initType = 'auto';
       // throw 'Please first Use "pillar-pack init" in new project';
@@ -93,8 +93,8 @@ function doInit() {
     });
   }
   if (!packageTo.scripts) packageTo.scripts = {};
-  packageTo.scripts.babel = `"./node_modules/.bin/babel src --out-dir lib"`
-  
+  packageTo.scripts.babel = `"./node_modules/.bin/babel src --out-dir lib"`;
+
   fs.writeJSONSync(packageToPath, packageTo);
   console.log('install babel-plugins...');
   exec('yarn install', initEnd);

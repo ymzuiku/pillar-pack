@@ -1,0 +1,8 @@
+{
+  "presets": ["env", "react", "stage-0"],
+  "plugins": [
+    "transform-runtime",
+    "transform-class-properties",
+    ["react-native-web", { "commonjs": true }]
+  ]
+}

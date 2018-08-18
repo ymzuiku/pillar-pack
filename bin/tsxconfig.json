@@ -5,7 +5,7 @@
     "removeComments": true,
     "preserveConstEnums": true,
     "skipLibCheck": true,
-    "target": "es3",
+    "target": "es5",
     "lib": [
       "dom",
       "dom.iterable",
@@ -20,6 +20,7 @@
       "es2015.generator"
     ],
     "allowJs": true,
+    "jsx": "react-native",
     "outDir": "",
     "watch": true,
     "sourceMap": true
