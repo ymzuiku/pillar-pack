@@ -1,6 +1,6 @@
 {
   "name": "pillar-pack",
-  "version": "1.3.8",
+  "version": "1.3.9",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -18,11 +18,8 @@
   },
   "homepage": "https://github.com/ymzuiku/pillar-pack#readme",
   "dependencies": {
-    "babel-eslint": "^8.2.6",
     "browser-sync": "^2.24.6",
     "fs-extra": "^7.0.0",
-    "parcel-bundler": "^1.9.7",
-    "parcel-plugin-react-native-web": "^0.6.1"
   },
   "pack_babel": {
     "babel-polyfill": "^6.26.0",
@@ -34,6 +31,9 @@
     "babel-cli": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "autoprefixer": "^9.1.0",
+    "parcel-bundler": "^1.9.7",
+    "parcel-plugin-react-native-web": "^0.6.1",
+    "babel-eslint": "^8.2.6",
     "postcss-modules": "^1.3.2"
   },
   "pack_scss": {
