@@ -18,9 +18,11 @@
   },
   "homepage": "https://github.com/ymzuiku/pillar-pack#readme",
   "dependencies": {
+    "babel-eslint": "^8.2.6",
     "browser-sync": "^2.24.6",
     "fs-extra": "^7.0.0",
-    "parcel-bundler": "^1.9.7"
+    "parcel-bundler": "^1.9.7",
+    "parcel-plugin-react-native-web": "^0.6.1"
   },
   "pack_babel": {
     "babel-polyfill": "^6.26.0",
