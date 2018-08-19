@@ -19,7 +19,7 @@
   "homepage": "https://github.com/ymzuiku/pillar-pack#readme",
   "dependencies": {
     "browser-sync": "^2.24.6",
-    "fs-extra": "^7.0.0",
+    "fs-extra": "^7.0.0"
   },
   "pack_babel": {
     "babel-polyfill": "^6.26.0",
